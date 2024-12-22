@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <ul></ul>
+    </div>
+    <input type="text" id="inputByAdd" />
+    <button type="button" id="buttonByAdd">新增</button>
+    <script>
+      // 資料
+      const data = [
+        {
+          id: 1,
+          content: "我是卡斯伯",
+        },
+        {
+          id: 2,
+          content: "我是小明",
+        },
+      ];
+
+      // 抓取 DOM
+      const appList = document.querySelector("#app ul");
+      const inputByAdd = document.querySelector("#inputByAdd");
+      const buttonByAdd = document.querySelector("#buttonByAdd");
+
+      // 渲染
+      function render() {
+        let template = "";
+        if (data.length < 1) {
+          template = `<li>目前沒有資料</li>`;
+        } else {
+          data.forEach((item) => {
+            template += `<li>${item.content} <button type="button" class="buttonByDelete" data-id="${item.id}">刪除</button></li>`;
+          });
+        }
+
+        app.innerHTML = template;
+      }
+
+      // 新增資料
+      function addData(content) {
+        if (content.trim() === "") {
+          alert("請輸入內容");
+          return;
+        }
+        const newId = data.length > 0 ? data[data.length - 1].id + 1 : 1;
+        const newData = {
+          id: newId,
+          content,
+        };
+        data.push(newData);
+        render();
+        inputByAdd.value = "";
+      }
+
+      // 刪除資料
+      function deleteData(id) {
+        const index = data.findIndex((item) => item.id === id);
+        if (index === -1) {
+          alert("資料不存在，無法刪除");
+          return;
+        }
+        data.splice(index, 1);
+        render();
+      }
+
+      // 註冊事件監聽
+      function initEventListener() {
+        buttonByAdd.addEventListener("click", (e) => {
+          e.preventDefault();
+          const value = inputByAdd.value;
+          addData(value);
+        });
+
+        app.addEventListener("click", (e) => {
+          if (e.target.classList.contains("buttonByDelete")) {
+            const id = Number.parseInt(e.target.dataset.id);
+            deleteData(id);
+          }
+        });
+      }
+
+      // 初始化
+      function init() {
+        render();
+        initEventListener();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
